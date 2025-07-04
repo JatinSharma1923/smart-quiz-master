@@ -1,0 +1,10 @@
+Task: Scrape the webpage at {url}, extract its textual content, then generate a quiz.
+
+Instructions:
+1. Fetch and clean all HTML from the provided URL.
+2. Extract visible text including headings, paragraphs, and lists.
+3. Based on the cleaned text, generate a quiz using the {quiz_type} format.
+
+Quiz types supported: "mcq", "true_false", or "mixed".
+Use the appropriate JSON structure from the templates.
+Return only the final quiz JSON output — no commentary or explanation.
