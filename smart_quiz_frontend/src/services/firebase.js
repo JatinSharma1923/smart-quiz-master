@@ -1,0 +1,1 @@
+// Firebase SDK setup + auth hooks
