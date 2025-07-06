@@ -67,30 +67,97 @@ uvicorn main:app --reload
 ## 📚 Folder Structure
 
 ```
-smart_quiz_api/
-   ├─ __init__.py
-   ├─ main.py
-   ├─ database.py
-   ├─ models.py
-   ├─ schema.py
-   ├─ routers/
-   │   ├─ __init__.py
-   │   ├─ admin_router.py
-   │   ├─ quiz_router.py
-   │   └─ user_router.py
-   ├─ services/
-   │   ├─ __init__.py
-   │   ├─ firebase_auth.py
-   │   ├─ openai_service.py
-   │   └─ scraper_service.py
-   ├─ templates/        # To be implemented
-   │   ├─ image.txt
-   │   ├─ mcq.txt
-   │   ├─ scraper_prompt.txt
-   │   └─ tf.txt
-   └─ utils/            # To be implemented
-       ├─ decorators.py
-       └─ text_utils.py
+smart-quiz-master/
+│
+├── smart_quiz_api/                          # 🚀 FastAPI backend
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── admin_router.py
+│   │   ├── quiz_router.py
+│   │   └── user_router.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── firebase_auth.py
+│   │   ├── openai_service.py
+│   │   └── scraper_service.py
+│   ├── templates/
+│   │   ├── image.txt
+│   │   ├── mcq.txt
+│   │   ├── tf.txt
+│   │   └── scraper_prompt.txt
+│   ├── utils/
+│   │   ├── auth_utils.py
+│   │   ├── decorators.py
+│   │   ├── retry_utils.py
+│   │   └── text_utils.py
+│   ├── migrations/                         # 📦 Alembic DB migrations
+│   │   ├── README
+│   │   ├── env.py
+│   │   └── script.py.mako
+│   ├── main.py                             # FastAPI entrypoint
+│   ├── models.py
+│   ├── schema.py
+│   ├── database.py
+│   ├── requirements.txt
+│   ├── .env                                # Local API env
+│   └── .env.example
+│
+├── smart_quiz_frontend/                    # 💻 Vite + Tailwind + React frontend
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   ├── hero.mp4
+│   │   └── lottie/
+│   │       ├── loading.json
+│   │       └── badge-earned.json
+│   ├── src/
+│   │   ├── assets/ (images, icons, fonts, videos)
+│   │   ├── animations/ (gsap, lottie, framer)
+│   │   ├── api/ (quizApi, authApi, axiosInstance...)
+│   │   ├── components/ (ui, quiz, layout, dashboard)
+│   │   ├── constants/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── interfaces/
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── store/
+│   │   ├── styles/
+│   │   ├── utils/
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── index.css
+│   ├── .env                                # VITE_API_URL, Firebase keys
+│   ├── .env.example
+│   ├── package.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   └── README.md
+│
+├── docker/                                 # 🐳 Dockerfiles and config
+│   ├── backend.dockerfile
+│   ├── frontend.dockerfile
+│   └── nginx.conf                          # Optional: For proxy
+│
+├── .github/                                # 🧪 GitHub Actions CI/CD
+│   └── workflows/
+│       └── ci.yml
+│
+├── .env                                     # Top-level env vars if shared
+├── .env.example
+├── docker-compose.yml                      # Dev + deployment orchestration
+├── alembic.ini                             # Alembic config
+├── LICENSE
+├── README.md                                # 📘 Full monorepo guide
+├── .gitignore
+├── .prettierrc                              # Format rules (optional)
+├── .eslintrc.js                             # Linting config (optional)
+├── tsconfig.base.json                       # Base TS config if needed
+└── CONTRIBUTING.md                          # 👥 Dev guidelines (optional)
+
 ```
 
 
