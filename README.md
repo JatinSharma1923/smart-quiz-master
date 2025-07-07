@@ -1,4 +1,5 @@
 # Smart Quiz Backend
+
 # 🧠 Smart Quiz API
 
 The **Smart Quiz API** is a FastAPI-powered backend for generating, managing, and grading AI-powered quizzes. It integrates with OpenAI's GPT-4o, Firebase Authentication, and PostgreSQL, making it suitable for interview prep, UPSC, SSC, cybersecurity learning, and more.
@@ -32,34 +33,41 @@ The **Smart Quiz API** is a FastAPI-powered backend for generating, managing, an
 ## ⚙️ Setup Guide
 
 ### 1. Clone the repo
+
 ```bash
 git clone https://github.com/JatinSharma1923/smart_quiz_api.git
 cd smart_quiz_api
 ```
 
 ### 2. Set up a virtual environment
+
 ```bash
 python -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Create .env file
+
 Update values for:
+
 ```bash
 cp .env.example .env
 ```
 
 Add your keys:
+
 - `OPENAI_API_KEY`
 - `FIREBASE_PROJECT_ID`
 - `DATABASE_URL`
 
 ### 5. Run the API
+
 ```bash
 uvicorn main:app --reload
 ```
@@ -95,7 +103,19 @@ smart-quiz-master/
 │   │   ├── env.py
 │   │   └── script.py.mako
 │   ├── main.py                             # FastAPI entrypoint
-│   ├── models.py
+│   ├── models/
+│   │   ├──__init__.py
+│   │   ├──answer.py
+│   │   ├──background.py
+│   │   ├──badge.py
+│   │   ├──base.py
+│   │   ├──enum.py
+│   │   ├──feedback.py
+│   │   ├──log.py
+│   │   ├──mixins.py
+│   │   ├──prompt.py
+│   │   ├──quiz.py
+│   │   ├──user.py
 │   ├── schema.py
 │   ├── database.py
 │   ├── requirements.txt
@@ -160,11 +180,8 @@ smart-quiz-master/
 
 ```
 
-
 ## 📫 Contact
 
 **Made by:** Jatin Sharma  
 📬 **Email:** [jatinsharma1923@gmail.com](mailto:jatinsharma1923@gmail.com)  
 🌐 **GitHub:** [@JatinSharma1923](https://github.com/JatinSharma1923)
-
-
