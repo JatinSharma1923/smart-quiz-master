@@ -1,43 +1,38 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from typing import List
-from database import get_db
-from schema import (
+from smart_quiz_api.database import get_db
+from smart_quiz_api.schema import (
     FeedbackOut, ErrorLogOut, SessionLogOut, GradingTaskOut,
-    APIKeyOut, HealthCheckLogOut, PromptCacheOut, LogOut
+    APIKeyOut, HealthCheckLogOut, PromptCacheOut, LogOut,
+    CacheClearResponse, RedisStatsResponse, OpenAIStatusResponse
 )
-from models import (
+from smart_quiz_api.models import (
     Feedback, ErrorLog, SessionLog, GradingTask, APIKey,
     HealthCheckLog, PromptCache, User, Quiz, RequestLog
 )
-import redis
-import os
-import openai
 from dotenv import load_dotenv
-from services.firebase_auth import get_current_user
+from smart_quiz_api.services.firebase import get_current_user
+from smart_quiz_api.services.redis_service import redis_service
+from smart_quiz_api.config import settings
 
 def verify_admin_user(user: User = Depends(get_current_user)):
-    if not user.is_admin:  # you'd need to add this to model
+    if not getattr(user, "is_admin", False):
         raise HTTPException(status_code=403, detail="Admins only")
     return user
 
 
 # === Load env variables ===
 load_dotenv()
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "changeme")
-
-# === Redis Connection ===
-redis_client = redis.Redis.from_url(REDIS_URL)
+ADMIN_API_KEY = settings.admin_api_key
 
 # === Security Dependency ===
-def verify_admin_key(x_admin_key: str = Header(...)):
-    if x_admin_key != ADMIN_API_KEY:
+def verify_admin_key(x_admin_key: str = Header(..., alias=settings.api_key_header)):
+    if x_admin_key != settings.admin_api_key:
         raise HTTPException(status_code=401, detail="Unauthorized access to admin routes")
 
 # === Router Setup with global dependency ===
 router = APIRouter(
-    prefix="/admin",
     tags=["Admin"],
     dependencies=[Depends(verify_admin_key)]
 )
@@ -85,7 +80,7 @@ def toggle_api_key(key: str, db: Session = Depends(get_db)):
     api_key = db.query(APIKey).filter(APIKey.key == key).first()
     if not api_key:
         raise HTTPException(status_code=404, detail="API key not found")
-    api_key.is_active = not api_key.is_active
+    setattr(api_key, "is_active", not getattr(api_key, "is_active", True))
     db.commit()
     db.refresh(api_key)
     return api_key
@@ -106,19 +101,28 @@ def get_request_logs(db: Session = Depends(get_db)):
     return db.query(RequestLog).order_by(RequestLog.timestamp.desc()).limit(100).all()
 
 # === Clear Redis Cache ===
-@router.delete("/cache/clear", response_model=dict)
+@router.delete("/cache/clear", response_model=CacheClearResponse)
 def clear_redis_cache():
-    redis_client.flushdb()
-    return {"detail": "Redis cache cleared successfully."}
+    if redis_service.flush_db():
+        return CacheClearResponse(message="Redis cache cleared successfully.")
+    return CacheClearResponse(message="Failed to clear cache")
+
+# === Redis Stats ===
+@router.get("/redis/stats", response_model=RedisStatsResponse)
+def get_redis_stats():
+    stats = redis_service.get_stats()
+    return RedisStatsResponse(**stats)
 
 # === OpenAI Status Test ===
-@router.get("/openai/status", response_model=dict)
+@router.get("/openai/status", response_model=OpenAIStatusResponse)
 def openai_status_check():
     try:
-        response = openai.ChatCompletion.create(
+        from openai import OpenAI
+        client = OpenAI()
+        client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": "Hello, are you online?"}]
         )
-        return {"status": "online", "message": response.choices[0].message.content.strip()}
-    except Exception as e:
-        return {"status": "offline", "error": str(e)}
+        return OpenAIStatusResponse(model="gpt-3.5-turbo", status="online", latency_ms=0.0)
+    except Exception:
+        return OpenAIStatusResponse(model="gpt-3.5-turbo", status="offline", latency_ms=0.0)

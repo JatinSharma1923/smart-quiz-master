@@ -6,6 +6,7 @@
 !.env.example
 *.key
 *.pem
+.firebase-credentials.json
 
 # ---------------------
 # Node.js
@@ -29,6 +30,7 @@ build/
 # ---------------------
 __pycache__/
 *.py[cod]
+*.pyc
 *.so
 *.egg-info/
 .eggs/
@@ -47,7 +49,7 @@ __pycache__/
 __pypackages__/
 
 # ---------------------
-# Vite, Frameworks, Tools
+# Build Tools & Frameworks
 # ---------------------
 .vite/
 .vitepress/
@@ -59,7 +61,6 @@ vite.config.*.timestamp-*
 .nuxt/
 .next/
 out/
-.cache/
 .svelte-kit/
 .docusaurus/
 .serverless/
