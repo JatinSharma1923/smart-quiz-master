@@ -118,3 +118,4 @@ venv.bak/
 .cursorignore
 .cursorindexingignore
 .pypirc
+firebase-credentials.json
